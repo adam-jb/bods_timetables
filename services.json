@@ -1,0 +1,683 @@
+{
+    "Service": {
+        "ServiceCode": [
+            "SER1"
+        ],
+        "PrivateCode": [
+            "SVAO001"
+        ],
+        "Lines": {
+            "Line": {
+                "LineName": [
+                    "1"
+                ]
+            }
+        },
+        "OperatingPeriod": {
+            "StartDate": [
+                "2021-09-26"
+            ],
+            "EndDate": [
+                "2021-12-23"
+            ]
+        },
+        "OperatingProfile": {
+            "RegularDayType": {
+                "DaysOfWeek": {
+                    "MondayToSunday": [
+
+                    ]
+                }
+            }
+        },
+        "RegisteredOperatorRef": [
+            "O4"
+        ],
+        "StopRequirements": {
+            "NoNewStopsRequired": [
+
+            ]
+        },
+        "StandardService": {
+            "Origin": [
+                "Newport"
+            ],
+            "Destination": [
+                "Cowes"
+            ],
+            "JourneyPattern": {
+                "DestinationDisplay": [
+                    "Cowes Carvel Lane"
+                ],
+                "Direction": [
+                    "outbound"
+                ],
+                "Description": [
+                    "Newport Bus Station - Cowes Carvel Lane"
+                ],
+                "RouteRef": [
+                    "RT1"
+                ],
+                "JourneyPatternSectionRefs": [
+                    "JPS1"
+                ]
+            },
+            "JourneyPattern": {
+                "DestinationDisplay": [
+                    "Cowes Carvel Lane"
+                ],
+                "Direction": [
+                    "outbound"
+                ],
+                "Description": [
+                    "Newport Bus Station - Cowes Carvel Lane"
+                ],
+                "RouteRef": [
+                    "RT1"
+                ],
+                "JourneyPatternSectionRefs": [
+                    "JPS2"
+                ]
+            },
+            "JourneyPattern": {
+                "DestinationDisplay": [
+                    "Cowes Carvel Lane"
+                ],
+                "Direction": [
+                    "outbound"
+                ],
+                "Description": [
+                    "Newport Bus Station - Cowes Carvel Lane"
+                ],
+                "RouteRef": [
+                    "RT1"
+                ],
+                "JourneyPatternSectionRefs": [
+                    "JPS3"
+                ]
+            },
+            "JourneyPattern": {
+                "DestinationDisplay": [
+                    "Cowes Carvel Lane"
+                ],
+                "Direction": [
+                    "outbound"
+                ],
+                "Description": [
+                    "Newport Bus Station - Cowes Carvel Lane"
+                ],
+                "RouteRef": [
+                    "RT1"
+                ],
+                "JourneyPatternSectionRefs": [
+                    "JPS4"
+                ]
+            },
+            "JourneyPattern": {
+                "DestinationDisplay": [
+                    "Cowes Carvel Lane"
+                ],
+                "Direction": [
+                    "outbound"
+                ],
+                "Description": [
+                    "Newport Bus Station - Cowes Carvel Lane"
+                ],
+                "RouteRef": [
+                    "RT1"
+                ],
+                "JourneyPatternSectionRefs": [
+                    "JPS5"
+                ]
+            },
+            "JourneyPattern": {
+                "DestinationDisplay": [
+                    "Cowes Carvel Lane"
+                ],
+                "Direction": [
+                    "outbound"
+                ],
+                "Description": [
+                    "Newport Bus Station - Cowes Carvel Lane"
+                ],
+                "RouteRef": [
+                    "RT1"
+                ],
+                "JourneyPatternSectionRefs": [
+                    "JPS6"
+                ]
+            },
+            "JourneyPattern": {
+                "DestinationDisplay": [
+                    "Cowes Carvel Lane"
+                ],
+                "Direction": [
+                    "outbound"
+                ],
+                "Description": [
+                    "Newport Bus Station - Cowes Carvel Lane"
+                ],
+                "RouteRef": [
+                    "RT1"
+                ],
+                "JourneyPatternSectionRefs": [
+                    "JPS7"
+                ]
+            },
+            "JourneyPattern": {
+                "DestinationDisplay": [
+                    "Cowes Carvel Lane"
+                ],
+                "Direction": [
+                    "outbound"
+                ],
+                "Description": [
+                    "Newport Bus Station - Cowes Carvel Lane"
+                ],
+                "RouteRef": [
+                    "RT1"
+                ],
+                "JourneyPatternSectionRefs": [
+                    "JPS8"
+                ]
+            },
+            "JourneyPattern": {
+                "DestinationDisplay": [
+                    "Cowes Carvel Lane"
+                ],
+                "Direction": [
+                    "outbound"
+                ],
+                "Description": [
+                    "Newport Bus Station - Cowes Carvel Lane"
+                ],
+                "RouteRef": [
+                    "RT1"
+                ],
+                "JourneyPatternSectionRefs": [
+                    "JPS9"
+                ]
+            },
+            "JourneyPattern": {
+                "DestinationDisplay": [
+                    "Cowes Carvel Lane"
+                ],
+                "Direction": [
+                    "outbound"
+                ],
+                "Description": [
+                    "Newport Bus Station - Cowes Carvel Lane"
+                ],
+                "RouteRef": [
+                    "RT1"
+                ],
+                "JourneyPatternSectionRefs": [
+                    "JPS10"
+                ]
+            },
+            "JourneyPattern": {
+                "DestinationDisplay": [
+                    "Cowes Carvel Lane"
+                ],
+                "Direction": [
+                    "outbound"
+                ],
+                "Description": [
+                    "Newport Bus Station - Cowes Carvel Lane"
+                ],
+                "RouteRef": [
+                    "RT1"
+                ],
+                "JourneyPatternSectionRefs": [
+                    "JPS11"
+                ]
+            },
+            "JourneyPattern": {
+                "DestinationDisplay": [
+                    "Cowes Carvel Lane"
+                ],
+                "Direction": [
+                    "outbound"
+                ],
+                "Description": [
+                    "Newport Bus Station - Cowes Carvel Lane"
+                ],
+                "RouteRef": [
+                    "RT2"
+                ],
+                "JourneyPatternSectionRefs": [
+                    "JPS12"
+                ]
+            },
+            "JourneyPattern": {
+                "DestinationDisplay": [
+                    "Cowes Carvel Lane"
+                ],
+                "Direction": [
+                    "outbound"
+                ],
+                "Description": [
+                    "Newport Bus Station - Cowes Carvel Lane"
+                ],
+                "RouteRef": [
+                    "RT2"
+                ],
+                "JourneyPatternSectionRefs": [
+                    "JPS13"
+                ]
+            },
+            "JourneyPattern": {
+                "DestinationDisplay": [
+                    "Cowes Carvel Lane"
+                ],
+                "Direction": [
+                    "outbound"
+                ],
+                "Description": [
+                    "Newport Bus Station - Cowes Carvel Lane"
+                ],
+                "RouteRef": [
+                    "RT2"
+                ],
+                "JourneyPatternSectionRefs": [
+                    "JPS14"
+                ]
+            },
+            "JourneyPattern": {
+                "DestinationDisplay": [
+                    "Cowes Carvel Lane"
+                ],
+                "Direction": [
+                    "outbound"
+                ],
+                "Description": [
+                    "Newport Bus Station - Cowes Carvel Lane"
+                ],
+                "RouteRef": [
+                    "RT2"
+                ],
+                "JourneyPatternSectionRefs": [
+                    "JPS15"
+                ]
+            },
+            "JourneyPattern": {
+                "DestinationDisplay": [
+                    "Cowes Carvel Lane"
+                ],
+                "Direction": [
+                    "outbound"
+                ],
+                "Description": [
+                    "Newport Bus Station - Cowes Carvel Lane"
+                ],
+                "RouteRef": [
+                    "RT2"
+                ],
+                "JourneyPatternSectionRefs": [
+                    "JPS16"
+                ]
+            },
+            "JourneyPattern": {
+                "DestinationDisplay": [
+                    "Cowes Carvel Lane"
+                ],
+                "Direction": [
+                    "outbound"
+                ],
+                "Description": [
+                    "Newport Bus Station - Cowes Carvel Lane"
+                ],
+                "RouteRef": [
+                    "RT2"
+                ],
+                "JourneyPatternSectionRefs": [
+                    "JPS17"
+                ]
+            },
+            "JourneyPattern": {
+                "DestinationDisplay": [
+                    "Cowes Carvel Lane"
+                ],
+                "Direction": [
+                    "outbound"
+                ],
+                "Description": [
+                    "Newport Bus Station - Cowes Carvel Lane"
+                ],
+                "RouteRef": [
+                    "RT2"
+                ],
+                "JourneyPatternSectionRefs": [
+                    "JPS18"
+                ]
+            },
+            "JourneyPattern": {
+                "DestinationDisplay": [
+                    "Newport Bus Station"
+                ],
+                "Direction": [
+                    "inbound"
+                ],
+                "Description": [
+                    "Cowes Carvel Lane - Newport Bus Station"
+                ],
+                "RouteRef": [
+                    "RT60"
+                ],
+                "JourneyPatternSectionRefs": [
+                    "JPS19"
+                ]
+            },
+            "JourneyPattern": {
+                "DestinationDisplay": [
+                    "Newport Bus Station"
+                ],
+                "Direction": [
+                    "inbound"
+                ],
+                "Description": [
+                    "Cowes Carvel Lane - Newport Bus Station"
+                ],
+                "RouteRef": [
+                    "RT60"
+                ],
+                "JourneyPatternSectionRefs": [
+                    "JPS20"
+                ]
+            },
+            "JourneyPattern": {
+                "DestinationDisplay": [
+                    "Newport Bus Station"
+                ],
+                "Direction": [
+                    "inbound"
+                ],
+                "Description": [
+                    "Cowes Carvel Lane - Newport Bus Station"
+                ],
+                "RouteRef": [
+                    "RT60"
+                ],
+                "JourneyPatternSectionRefs": [
+                    "JPS21"
+                ]
+            },
+            "JourneyPattern": {
+                "DestinationDisplay": [
+                    "Newport Bus Station"
+                ],
+                "Direction": [
+                    "inbound"
+                ],
+                "Description": [
+                    "Cowes Carvel Lane - Newport Bus Station"
+                ],
+                "RouteRef": [
+                    "RT60"
+                ],
+                "JourneyPatternSectionRefs": [
+                    "JPS22"
+                ]
+            },
+            "JourneyPattern": {
+                "DestinationDisplay": [
+                    "Newport Bus Station"
+                ],
+                "Direction": [
+                    "inbound"
+                ],
+                "Description": [
+                    "Cowes Carvel Lane - Newport Bus Station"
+                ],
+                "RouteRef": [
+                    "RT60"
+                ],
+                "JourneyPatternSectionRefs": [
+                    "JPS23"
+                ]
+            },
+            "JourneyPattern": {
+                "DestinationDisplay": [
+                    "Newport Bus Station"
+                ],
+                "Direction": [
+                    "inbound"
+                ],
+                "Description": [
+                    "Cowes Carvel Lane - Newport Bus Station"
+                ],
+                "RouteRef": [
+                    "RT60"
+                ],
+                "JourneyPatternSectionRefs": [
+                    "JPS24"
+                ]
+            },
+            "JourneyPattern": {
+                "DestinationDisplay": [
+                    "Newport Bus Station"
+                ],
+                "Direction": [
+                    "inbound"
+                ],
+                "Description": [
+                    "Cowes Carvel Lane - Newport Bus Station"
+                ],
+                "RouteRef": [
+                    "RT60"
+                ],
+                "JourneyPatternSectionRefs": [
+                    "JPS25"
+                ]
+            },
+            "JourneyPattern": {
+                "DestinationDisplay": [
+                    "Newport Bus Station"
+                ],
+                "Direction": [
+                    "inbound"
+                ],
+                "Description": [
+                    "Cowes Carvel Lane - Newport Bus Station"
+                ],
+                "RouteRef": [
+                    "RT60"
+                ],
+                "JourneyPatternSectionRefs": [
+                    "JPS26"
+                ]
+            },
+            "JourneyPattern": {
+                "DestinationDisplay": [
+                    "Newport Bus Station"
+                ],
+                "Direction": [
+                    "inbound"
+                ],
+                "Description": [
+                    "Cowes Carvel Lane - Newport Bus Station"
+                ],
+                "RouteRef": [
+                    "RT60"
+                ],
+                "JourneyPatternSectionRefs": [
+                    "JPS27"
+                ]
+            },
+            "JourneyPattern": {
+                "DestinationDisplay": [
+                    "Newport Bus Station"
+                ],
+                "Direction": [
+                    "inbound"
+                ],
+                "Description": [
+                    "Cowes Carvel Lane - Newport Bus Station"
+                ],
+                "RouteRef": [
+                    "RT60"
+                ],
+                "JourneyPatternSectionRefs": [
+                    "JPS28"
+                ]
+            },
+            "JourneyPattern": {
+                "DestinationDisplay": [
+                    "Newport Bus Station"
+                ],
+                "Direction": [
+                    "inbound"
+                ],
+                "Description": [
+                    "Cowes Carvel Lane - Newport Bus Station"
+                ],
+                "RouteRef": [
+                    "RT61"
+                ],
+                "JourneyPatternSectionRefs": [
+                    "JPS29"
+                ]
+            },
+            "JourneyPattern": {
+                "DestinationDisplay": [
+                    "Newport Bus Station"
+                ],
+                "Direction": [
+                    "inbound"
+                ],
+                "Description": [
+                    "Cowes Carvel Lane - Newport Bus Station"
+                ],
+                "RouteRef": [
+                    "RT61"
+                ],
+                "JourneyPatternSectionRefs": [
+                    "JPS30"
+                ]
+            },
+            "JourneyPattern": {
+                "DestinationDisplay": [
+                    "Newport Bus Station"
+                ],
+                "Direction": [
+                    "inbound"
+                ],
+                "Description": [
+                    "Cowes Carvel Lane - Newport Bus Station"
+                ],
+                "RouteRef": [
+                    "RT61"
+                ],
+                "JourneyPatternSectionRefs": [
+                    "JPS31"
+                ]
+            },
+            "JourneyPattern": {
+                "DestinationDisplay": [
+                    "Newport Bus Station"
+                ],
+                "Direction": [
+                    "inbound"
+                ],
+                "Description": [
+                    "Cowes Carvel Lane - Newport Bus Station"
+                ],
+                "RouteRef": [
+                    "RT61"
+                ],
+                "JourneyPatternSectionRefs": [
+                    "JPS32"
+                ]
+            },
+            "JourneyPattern": {
+                "DestinationDisplay": [
+                    "Newport Bus Station"
+                ],
+                "Direction": [
+                    "inbound"
+                ],
+                "Description": [
+                    "Cowes Carvel Lane - Newport Bus Station"
+                ],
+                "RouteRef": [
+                    "RT61"
+                ],
+                "JourneyPatternSectionRefs": [
+                    "JPS33"
+                ]
+            },
+            "JourneyPattern": {
+                "DestinationDisplay": [
+                    "Newport Bus Station"
+                ],
+                "Direction": [
+                    "inbound"
+                ],
+                "Description": [
+                    "Cowes Carvel Lane - Newport Bus Station"
+                ],
+                "RouteRef": [
+                    "RT61"
+                ],
+                "JourneyPatternSectionRefs": [
+                    "JPS34"
+                ]
+            },
+            "JourneyPattern": {
+                "DestinationDisplay": [
+                    "Newport Bus Station"
+                ],
+                "Direction": [
+                    "inbound"
+                ],
+                "Description": [
+                    "Cowes Carvel Lane - Newport Bus Station"
+                ],
+                "RouteRef": [
+                    "RT61"
+                ],
+                "JourneyPatternSectionRefs": [
+                    "JPS35"
+                ]
+            },
+            "JourneyPattern": {
+                "DestinationDisplay": [
+                    "Newport Bus Station"
+                ],
+                "Direction": [
+                    "inbound"
+                ],
+                "Description": [
+                    "Cowes Carvel Lane - Newport Bus Station"
+                ],
+                "RouteRef": [
+                    "RT61"
+                ],
+                "JourneyPatternSectionRefs": [
+                    "JPS36"
+                ]
+            },
+            "JourneyPattern": {
+                "DestinationDisplay": [
+                    "Newport Bus Station"
+                ],
+                "Direction": [
+                    "inbound"
+                ],
+                "Description": [
+                    "Cowes Carvel Lane - Newport Bus Station"
+                ],
+                "RouteRef": [
+                    "RT61"
+                ],
+                "JourneyPatternSectionRefs": [
+                    "JPS37"
+                ]
+            }
+        },
+        "Direction": [
+            "inboundAndOutbound"
+        ]
+    }
+}
+
