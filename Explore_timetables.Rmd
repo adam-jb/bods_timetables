@@ -1,0 +1,197 @@
+---
+title: "Explore timetables data"
+output: html_document
+---
+
+Adam Bricknell, November 2021
+
+```{r setup, include=TRUE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+library(dplyr )
+library(purrr)
+library(data.table)
+library(ggplot2)
+```
+
+## Isle of Wight timetables
+
+The XML files for the Isle of Wight buses have been extracted into 8 tables. We explore them and how they link together here. We also attempt to link them to AVL. 
+
+```{r, echo=TRUE}
+load("full_isle_of_wight.RData")
+
+print(map(full_isle_of_wight, dim))
+```
+
+
+## Stop points
+
+Gives you ID code, name and lat/long of bus stops. There are 981 bus stops on the Isle of Wight
+
+```{r, echo=TRUE}
+head(full_isle_of_wight$stop_points)
+```
+
+
+
+## Route sections
+
+Individual 'links', or line segments, for each route. May enable plotting of the route. 
+
+routelink = section of route (line segment). Links to 'RouteLinkRef' in journey_pattern_sections table
+
+route_section_id = I *think* this corresponds to 'id' in Routes (there are the same number of codes). However the codes don't match up. 
+
+
+
+```{r, echo=TRUE}
+print(unique(full_isle_of_wight$all_route_sections_df$route_section_id))
+head(full_isle_of_wight$all_route_sections_df)
+```
+
+Below are routes for one service (everything from one XML file). Looks like there is some noise in the coordinates of routes: perhaps it uses old AVL data or maybe something was missed in the processing. 
+
+```{r, echo=TRUE}
+full_isle_of_wight$all_route_sections_df %>% 
+  filter(file_source == 'Vectis 26 09 2021_SER1.xml') %>%
+  ggplot(aes(x = latitude, 
+             y = longitude, 
+             group = routelink, 
+             color = route_section_id)) + 
+    geom_line() +
+    ggthemes::theme_few() +
+    theme(axis.text.y = element_blank(),
+          axis.text.x = element_blank())
+
+```
+
+Below we plot every link on the Isle of Wight by service. 
+
+```{r, echo=TRUE}
+full_isle_of_wight$all_route_sections_df %>% 
+  mutate(ServiceCode = as.factor(ServiceCode)) %>%
+  ggplot(aes(x = latitude, 
+             y = longitude, 
+             group = unique_service_routelink_id, 
+             color = ServiceCode)) + 
+    geom_line() +
+    ggthemes::theme_few() +
+    theme(axis.text.y = element_blank(),
+          axis.text.x = element_blank())
+
+```
+
+
+Zooming in on several routelinks for one service
+
+```{r, echo=TRUE}
+full_isle_of_wight$all_route_sections_df %>% 
+  filter(routelink %in% c('RL1', 'RL2', 'RL3', 'RL4', 'RL5', 'RL6', 'RL7'),
+         ServiceCode == 'SER1') %>%
+ggplot(aes(x = latitude, y = longitude, group = routelink, color = routelink)) + 
+  geom_line() +
+  ggthemes::theme_few() +
+  theme(axis.text.y = element_blank(),
+        axis.text.x = element_blank())
+
+```
+
+
+## Routes
+
+Gives you unique route IDs
+
+```{r, echo=TRUE}
+head(full_isle_of_wight$routes)
+```
+
+
+## Journey patterns
+
+Gives each section of journey between bus stops (From.StopPointRef and To.StopPointRef : link to stop_points table) for each unique journey (journey_id)
+
+RouteLinkRef = matches to 'routelink' in all_route_sections_df table (say, perhaps, if you wanted to plot the routes between each stop)
+
+
+```{r, echo=TRUE}
+head(full_isle_of_wight$journey_pattern_sections)
+```
+
+
+
+## Operators
+
+Operator details for each service. Can join to Service Details with ServiceCode
+
+
+```{r, echo=TRUE}
+head(full_isle_of_wight$operators)
+```
+
+
+## Service details
+
+Operator details for each service
+
+```{r, echo=TRUE}
+head(full_isle_of_wight$service_details)
+```
+
+## Standard service
+
+Shows ultimate destination at each link in the service. And whether inbound or outbound.
+
+```{r, echo=TRUE}
+head(full_isle_of_wight$standard_service)
+```
+
+
+
+## Vehicle journey and departure times
+
+Includes vehicle type, ticket machine codes, journey code (VehicleJourneyCode), Garage used (GarageRef), Service code (ServiceRef), Journey pattern (links to journey_pattern_sections, however the lookup codes will need wrangling to remove the 'S' in JourneyPatternRef), VehicleJourneyCode and Departure time
+
+There last 10 columns are sparsely populated: there aren't included for many routes
+
+```{r, echo=TRUE}
+head(full_isle_of_wight$vehicle_journeys_and_departure_times)
+```
+
+Below we see the distribution of departure times. 
+
+```{r, echo=TRUE}
+hist <- lubridate::parse_date_time(full_isle_of_wight$vehicle_journeys_and_departure_times$DepartureTime, orders = '%H:%M:%S') %>% 
+  as.data.frame() %>%
+  magrittr::set_colnames('time') %>%
+  ggplot(aes(x = time, alpha = 0.6)) + 
+    geom_histogram(fill='purple',colour = 'black', bins = 48) +
+    ggthemes::theme_few() +
+    theme(legend.position = 'none')
+
+hist
+
+```
+
+
+
+
+
+## Does JourneyPatternRef link to journey_id?
+
+Looks like they might (all pattern_refs are in journey_ids, but the reverse isnt true) However the lookup codes will need wrangling to remove the 'S' in JourneyPatternRef.
+
+```{r, echo=TRUE}
+journey_ids <- unique(full_isle_of_wight$journey_pattern_sections$journey_id) %>% substring(4)
+pattern_refs <- unique(full_isle_of_wight$vehicle_journeys_and_departure_times$JourneyPatternRef) %>% substring(3)
+
+print(pattern_refs %in% journey_ids)
+print(journey_ids %in% pattern_refs) 
+
+```
+
+
+
+
+
+
+

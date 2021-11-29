@@ -2,11 +2,9 @@
 
 
 ##### Code to extract BODS timetable data from XML into list of data.frames
-##### It processes 6 out of 7 elements of BODS timetable. The only element it 
-##### leaves out is 'Services' (because I didn't have use for it)
 
 #### Does one service, then creates a function to process a service & runs this on
-#### a loop to produce a list of 6 dataframes - covering all services on the Isle of Wight
+#### a loop to produce a list of 8 dataframes - covering all services on the Isle of Wight
 
 
 
@@ -17,13 +15,6 @@
 ### 2. Do the timetables actually include time planned to arrive at each stop? This could be inferred
 ### from length of each section of the journey, but that isn't ideal
 
-### 3. What does each XML file represent - is it service? 
-###       (There is only one service per file but multiple routes) 
-
-
-
-
-###### Caveat: haven't QA'd this!!!
 
 ### Adam Bricknell, November 2021
 
@@ -72,7 +63,7 @@ IoW_list <- list.files(xml_path, pattern = "xml")
 
 # Extract single XML file  -------------------------------------------------
 
-x = IoW_list[1]
+x = IoW_list[2]
 print(x)
 
 xml_object <- read_xml(paste0(xml_path, "/", x)) %>% 
@@ -124,7 +115,12 @@ for (iter in seq_along(1:length(all_route_sections_list))){
   
   route_section <- rbindlist(store_links) %>% rename(routelink = routelinks.i., link_id = IDs)
   route_section$route_section_id <- section_id
+  
+  route_section$unique_routelink_section_id <- paste0(route_section$routelink, '_', route_section$route_section_id)
+  
   all_route_sections_list[[iter]]  <- route_section
+  
+  
   
 }
 list_timetables[['all_route_sections']] <- rbindlist(all_route_sections_list)
@@ -185,7 +181,7 @@ standard_service <- l$TransXChange$Services$Service$StandardService
 
 # Vias arent always included
 if (sum(names(standard_service) == 'Vias') > 0.5) {
-  services_via <- expand.grid(standard_service$Origin, standard_service$Destination, standard_service$Vias)
+  services_via <- expand.grid(standard_service$Origin, standard_service$Destination, unlist(standard_service$Vias))
   standard_service[['Vias']] <- NULL  # need to do this to make journey pattern table
 } else {
   services_via <- expand.grid(standard_service$Origin, standard_service$Destination)
@@ -201,7 +197,14 @@ list_timetables[['service_details']] <- data.frame(all_order_service_df, service
 # making journey pattern table (separate to other elements of 'Service' as formatted differently - deeper table)
 standard_service[['Origin']] <- NULL
 standard_service[['Destination']] <- NULL
-list_timetables[['standard_service']] <- rbindlist(standard_service)
+
+standard_service <- rbindlist(standard_service)     # combine and loop to ensure dataframe format is correct
+setDF(standard_service)   # ensure isnt a data.table
+for (i in 1:ncol(standard_service)){
+  standard_service[, i] <- unlist(standard_service[, i])
+}
+list_timetables[['standard_service']] <- standard_service
+
 
 
 
@@ -283,9 +286,13 @@ get_list_of_dfs_for_service <- function(x, xml_path) {
     
     route_section <- rbindlist(store_links) %>% rename(routelink = routelinks.i., link_id = IDs)
     route_section$route_section_id <- section_id
-    all_route_sections_list[[iter]]  <- route_section
     
+    route_section <- rbindlist(store_links) %>% rename(routelink = routelinks.i., link_id = IDs)
+    route_section$route_section_id <- section_id
+    
+    all_route_sections_list[[iter]]  <- route_section
   }
+  
   list_timetables[['all_route_sections_df']] <- rbindlist(all_route_sections_list)
   
   
@@ -317,10 +324,6 @@ get_list_of_dfs_for_service <- function(x, xml_path) {
   
   
   
-  ## Operators
-  list_timetables[['operators']] <- l$TransXChange$Operators %>% extract_list_of_lists_to_df()
-  
-  
   
   
   ### Services: inc various info about the service. Split into 2 tables
@@ -333,7 +336,7 @@ get_list_of_dfs_for_service <- function(x, xml_path) {
   
   # Vias arent always included
   if (sum(names(standard_service) == 'Vias') > 0.5) {
-    services_via <- expand.grid(standard_service$Origin, standard_service$Destination, standard_service$Vias)
+    services_via <- expand.grid(standard_service$Origin, standard_service$Destination, unlist(standard_service$Vias))
     standard_service[['Vias']] <- NULL    # need to do this to make journey pattern table
   } else {
     services_via <- expand.grid(standard_service$Origin, standard_service$Destination)
@@ -349,8 +352,21 @@ get_list_of_dfs_for_service <- function(x, xml_path) {
   standard_service[['Origin']] <- NULL
   standard_service[['Destination']] <- NULL
   
-  list_timetables[['standard_service']] <- rbindlist(standard_service)
+  standard_service <- rbindlist(standard_service)     # combine and loop to ensure dataframe format is correct
+  setDF(standard_service)   # ensure isnt a data.table
+  for (i in 1:ncol(standard_service)){
+    standard_service[, i] <- unlist(standard_service[, i])
+  }
+  list_timetables[['standard_service']] <- standard_service
   
+  
+  
+  
+  
+  ## Operators
+  operators <- l$TransXChange$Operators %>% extract_list_of_lists_to_df()
+  operators$ServiceCode <- list_timetables[['service_details']]$ServiceCode[1]  # adding service code
+  list_timetables[['operators']] <- operators
   
   
   
@@ -391,7 +407,27 @@ table_names <- names(all_services_list[[1]])
 for (i in seq_along(1:length(table_names))){
   table_name <- table_names[i]
   full_isle_of_wight[[table_name]] <- bind_rows(lapply(all_services_list, '[[', i))
+  full_isle_of_wight[[table_name]] <- distinct(full_isle_of_wight[[table_name]])
+  setDF(full_isle_of_wight[[table_name]])  # ensure it isn't a data.table
 }
+
+
+
+
+
+### adding service name to links table
+service_code_lookup <- full_isle_of_wight$service_details %>% 
+  select(ServiceCode, file_source) %>%
+  distinct()
+
+full_isle_of_wight$all_route_sections_df  <- full_isle_of_wight$all_route_sections_df %>% 
+  merge(service_code_lookup, by='file_source')
+
+# add an ID that's unique for that link and service. Useful when plotting the links
+full_isle_of_wight$all_route_sections_df  <- full_isle_of_wight$all_route_sections_df %>%
+  mutate(unique_service_routelink_id = paste0(ServiceCode, '_', routelink))
+
+
 
 
 
@@ -403,30 +439,7 @@ save(full_isle_of_wight, file = "full_isle_of_wight.RData")
 
 
 
-
-# Exploring a few results  ------------------------------------------------
-
-# id's seem to be the same for all services
-full_isle_of_wight$routes %>% group_by(id) %>% summarise(n())
-
-full_isle_of_wight$stop_points %>% group_by(CommonName) %>% summarise(n())
-
-head(full_isle_of_wight$stop_points)
-
-head(full_isle_of_wight$all_route_sections_df)
-full_isle_of_wight$all_route_sections_df %>% group_by(routelink) %>% summarise(n())
-
-full_isle_of_wight$routes %>% head()
-
-full_isle_of_wight$journey_pattern_sections %>% head()
-
-full_isle_of_wight$journey_pattern_sections %>% head()
-full_isle_of_wight$journey_pattern_sections$RunTime %>% table()
-
-full_isle_of_wight$operators
-
-full_isle_of_wight$vehicle_journeys_and_departure_times %>% head()
-
+###### End of processing
 
 
 

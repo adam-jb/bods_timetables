@@ -1,0 +1,96 @@
+{
+    "Service": {
+        "ServiceCode": [
+            "SER12"
+        ],
+        "PrivateCode": [
+            "SVAO012"
+        ],
+        "Lines": {
+            "Line": {
+                "LineName": [
+                    "12"
+                ]
+            }
+        },
+        "OperatingPeriod": {
+            "StartDate": [
+                "2021-09-26"
+            ],
+            "EndDate": [
+                "2021-12-23"
+            ]
+        },
+        "OperatingProfile": {
+            "RegularDayType": {
+                "DaysOfWeek": {
+                    "MondayToSunday": [
+
+                    ]
+                }
+            }
+        },
+        "RegisteredOperatorRef": [
+            "O4"
+        ],
+        "StopRequirements": {
+            "NoNewStopsRequired": [
+
+            ]
+        },
+        "StandardService": {
+            "Origin": [
+                "Newport"
+            ],
+            "Destination": [
+                "Alum Bay"
+            ],
+            "Vias": {
+                "Via": [
+                    "Freshwater"
+                ],
+                "Via": [
+                    "Totland"
+                ]
+            },
+            "JourneyPattern": {
+                "DestinationDisplay": [
+                    "Needles Landmark Attraction"
+                ],
+                "Direction": [
+                    "outbound"
+                ],
+                "Description": [
+                    "Newport Bus Station - Needles Landmark Attraction"
+                ],
+                "RouteRef": [
+                    "RT27"
+                ],
+                "JourneyPatternSectionRefs": [
+                    "JPS313"
+                ]
+            },
+            "JourneyPattern": {
+                "DestinationDisplay": [
+                    "Newport Bus Station"
+                ],
+                "Direction": [
+                    "inbound"
+                ],
+                "Description": [
+                    "Needles Landmark Attraction - Newport Bus Station"
+                ],
+                "RouteRef": [
+                    "RT88"
+                ],
+                "JourneyPatternSectionRefs": [
+                    "JPS314"
+                ]
+            }
+        },
+        "Direction": [
+            "inboundAndOutbound"
+        ]
+    }
+}
+

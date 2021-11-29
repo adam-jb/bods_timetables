@@ -1,1 +1,5 @@
 xml_timetables_data/*
+*.rds
+*.parquet
+*.csv
+*.RData
