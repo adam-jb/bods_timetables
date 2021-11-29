@@ -112,6 +112,8 @@ Gives each section of journey between bus stops (From.StopPointRef and To.StopPo
 
 RouteLinkRef = matches to 'routelink' in all_route_sections_df table (say, perhaps, if you wanted to plot the routes between each stop)
 
+RunTime = estimated journey time for that section. PT2M = 2 minutes, etc
+
 
 ```{r, echo=TRUE}
 head(full_isle_of_wight$journey_pattern_sections)

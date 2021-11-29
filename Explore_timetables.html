@@ -319,6 +319,7 @@ ggplot(aes(x = latitude, y = longitude, group = routelink, color = routelink)) +
 <h2>Journey patterns</h2>
 <p>Gives each section of journey between bus stops (From.StopPointRef and To.StopPointRef : link to stop_points table) for each unique journey (journey_id)</p>
 <p>RouteLinkRef = matches to ‘routelink’ in all_route_sections_df table (say, perhaps, if you wanted to plot the routes between each stop)</p>
+<p>RunTime = estimated journey time for that section. PT2M = 2 minutes, etc</p>
 <pre class="r"><code>head(full_isle_of_wight$journey_pattern_sections)</code></pre>
 <pre><code>##   From.DynamicDestinationDisplay From.StopPointRef From.TimingStatus
 ## 1           Cowes via Four Cross      23000002001A               PTP
