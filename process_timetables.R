@@ -3,17 +3,7 @@
 
 ##### Code to extract BODS timetable data from XML into list of data.frames
 
-#### Does one service, then creates a function to process a service & runs this on
-#### a loop to produce a list of 8 dataframes - covering all services on the Isle of Wight
-
-
-
-###### Can you help with the next steps? They are:
-
-### 1. find out how to make new API requests to get data for other areas
-
-### 2. Do the timetables actually include time planned to arrive at each stop? This could be inferred
-### from length of each section of the journey, but that isn't ideal
+##### Source this and use extract_all_xml_files()
 
 
 ### Adam Bricknell, November 2021
@@ -27,6 +17,7 @@ library(dplyr )
 library(purrr)
 library(data.table)
 library(rjson)
+library(docstring)
 
 
 
@@ -51,11 +42,11 @@ extract_list_of_lists_to_df <- function(x) {
 # Define file path and identify XML files
 setwd('/Users/dftdatascience/Desktop/bods_timetables')
 
-xml_path <- "xml_timetables_data/bus_timetable_xml/"
+xml_path <- 'xml_timetables_data/bus_timetable_xml/'
 
-IoW_list <- list.files(xml_path, pattern = "xml")
+IoW_list <- list.files(xml_path, pattern = 'xml')
 
-
+1_CA_PF_1_20200405
 
 
 
@@ -66,8 +57,14 @@ IoW_list <- list.files(xml_path, pattern = "xml")
 x = IoW_list[2]
 print(x)
 
-xml_object <- read_xml(paste0(xml_path, "/", x)) %>% 
+xml_object <- read_xml(paste0(xml_path, '/', x)) %>% 
   xml_ns_strip()
+
+
+## override
+xml_object <- read_xml('temp_timetables_download/xmls/1_CA_PF_1_20200405.xml') %>% 
+  xml_ns_strip()
+
 
 l = as_list(xml_object)
 
@@ -76,7 +73,7 @@ names(l$TransXChange)   # 7 headings of data
 
 
 
-## list to store 7 dataframes extracted from XML
+## list to store 8 dataframes extracted from XML
 list_timetables <- list()
 
 
@@ -107,13 +104,32 @@ for (iter in seq_along(1:length(all_route_sections_list))){
   store_links <- vector(length = length(routelinks), mode = 'list')
   for (i in seq_along(1:length(routelinks))){
     links <- l$TransXChange$RouteSections[[iter]][[i]][[5]][[1]]
-    IDs <- lapply(map(links, attributes), '[[', 2) %>% unlist()
-    latitude <- lapply(links, '[[', 1) %>% lapply('[[', 3) %>% unlist()
-    longitude <- lapply(links, '[[', 1) %>% lapply('[[', 4) %>% unlist()
-    store_links[[i]] <- data.frame(routelinks[i], IDs, latitude, longitude)
+    
+    print(links)
+    #IDs <- lapply(map(links, attributes), '[[', 2) %>% unlist()
+    
+    IDs <- try(lapply(map(links, attributes), '[[', 2) %>% unlist())
+    if("try-error" %in% class(IDs)) {
+      IDs <- rep('placeholder', length(links))
+    }
+    
+    latitude <- lapply(links, '[[', '1') %>% lapply('[[', 'Latitude') %>% unlist()
+    if (is.null(latitude)) {
+      latitude <- lapply(links, '[[', 'Latitude') %>% unlist()
+    }
+    
+    
+    longitude <- lapply(links, '[[', 1) %>% lapply('[[', 'Longitude') %>% unlist()
+    if (is.null(longitude)) {
+      longitude <- lapply(links, '[[', 'Longitude') %>% unlist()
+    }
+    
+    routelinks_repd <- rep(routelinks[i], length(latitude))
+    
+    store_links[[i]] <- data.frame(routelinks_repd, IDs, latitude, longitude)
   }
   
-  route_section <- rbindlist(store_links) %>% rename(routelink = routelinks.i., link_id = IDs)
+  route_section <- rbindlist(store_links) %>% rename(link_id = IDs)
   route_section$route_section_id <- section_id
   
   route_section$unique_routelink_section_id <- paste0(route_section$routelink, '_', route_section$route_section_id)
@@ -133,7 +149,7 @@ list_timetables[['all_route_sections']] <- rbindlist(all_route_sections_list)
 
 # Routes: list of route IDs
 routes <- l$TransXChange$Routes %>% map(attributes) %>% map(unlist)  %>% lapply(as.data.frame.list)
-list_timetables[['routes']] <- routes %>% rbindlist() %>% select(-starts_with('names'))
+list_timetables[['routes']] <- routes %>% rbindlist(fill=T) %>% select(-starts_with('names'))
 
 
 
@@ -197,11 +213,31 @@ list_timetables[['service_details']] <- data.frame(all_order_service_df, service
 # making journey pattern table (separate to other elements of 'Service' as formatted differently - deeper table)
 standard_service[['Origin']] <- NULL
 standard_service[['Destination']] <- NULL
+standard_service[['UseAllStopPoints']] <- NULL
 
-standard_service <- rbindlist(standard_service)     # combine and loop to ensure dataframe format is correct
+# make line
+patterns_store <- list()
+for (i in 1:length(standard_service)){
+  thing <- unlist(standard_service[[i]])
+  ix <- (thing %>% names()) == "JourneyPatternSectionRefs"
+  patterns <- data.frame(thing[!ix]) %>% t()
+  patterns$JourneyPatternSectionRefs <- thing[ix]
+  patterns <- data.frame(patterns)
+  
+  
+  names(patterns) <-c( "PrivateCode" ,  "DestinationDisplay",  "Direction"  , "RouteRef" ,"JourneyPatternSectionRefs") 
+  
+  
+  
+  patterns_store[[i]] <- patterns
+}
+standard_service <- rbindlist(patterns_store, fill = T)
+
+
+#standard_service <- rbindlist(standard_service, fill=T)     # combine and loop to ensure dataframe format is correct
 setDF(standard_service)   # ensure isnt a data.table
 for (i in 1:ncol(standard_service)){
-  standard_service[, i] <- unlist(standard_service[, i])
+  standard_service[, i] <- unlist(standard_service[, i])  # ensure all cols are just vectors: nothing more
 }
 list_timetables[['standard_service']] <- standard_service
 
@@ -214,7 +250,7 @@ list_timetables[['standard_service']] <- standard_service
 # exporting to json which can make it easier to intuit
 for_json <- l$TransXChange$Services
 jsonData <- toJSON(for_json) %>% jsonlite::prettify()
-write(jsonData, "example_of_services.json")
+write(jsonData, 'example_of_services.json')
 
 
 
@@ -243,6 +279,8 @@ print(lapply(list_timetables, dim))
 
 # Same process as above,  wrapped into a function ------------------------
 get_list_of_dfs_for_service <- function(x, xml_path) {
+  
+  print(xml_path)
   
   
   xml_object <- read_xml(paste0(xml_path, "/", x)) %>% 
@@ -278,17 +316,42 @@ get_list_of_dfs_for_service <- function(x, xml_path) {
     store_links <- vector(length = length(routelinks), mode = 'list')
     for (i in seq_along(1:length(routelinks))){
       links <- l$TransXChange$RouteSections[[iter]][[i]][[5]][[1]]
-      IDs <- lapply(map(links, attributes), '[[', 2) %>% unlist()
-      latitude <- lapply(links, '[[', 1) %>% lapply('[[', 3) %>% unlist()
-      longitude <- lapply(links, '[[', 1) %>% lapply('[[', 4) %>% unlist()
-      store_links[[i]] <- data.frame(routelinks[i], IDs, latitude, longitude)
+      
+      #print(links)
+      
+      IDs <- try(lapply(map(links, attributes), '[[', 2) %>% unlist())
+      if("try-error" %in% class(IDs)) {
+        IDs <- rep('placeholder', length(links))
+      }
+      
+      latitude <- lapply(links, '[[', '1') %>% lapply('[[', 'Latitude') %>% unlist()
+      if (is.null(latitude)) {
+        latitude <- lapply(links, '[[', 'Latitude') %>% unlist()
+      }
+      if (is.null(latitude)) {
+        print('latitude still null')
+        print(latitude)
+        print('links:')
+        print(links)
+      }
+      
+      
+      longitude <- lapply(links, '[[', 1) %>% lapply('[[', 'Longitude') %>% unlist()
+      if (is.null(longitude)) {
+        longitude <- lapply(links, '[[', 'Longitude') %>% unlist()
+      }
+      
+      
+      routelinks_repd <- rep(routelinks[i], length(latitude))
+      
+      store_links[[i]] <- data.frame(routelinks_repd, IDs, latitude, longitude)
     }
     
-    route_section <- rbindlist(store_links) %>% rename(routelink = routelinks.i., link_id = IDs)
+    route_section <- rbindlist(store_links) %>% rename(link_id = IDs)
     route_section$route_section_id <- section_id
+
     
-    route_section <- rbindlist(store_links) %>% rename(routelink = routelinks.i., link_id = IDs)
-    route_section$route_section_id <- section_id
+    route_section$unique_routelink_section_id <- paste0(route_section$routelink, '_', route_section$route_section_id)
     
     all_route_sections_list[[iter]]  <- route_section
   }
@@ -300,7 +363,7 @@ get_list_of_dfs_for_service <- function(x, xml_path) {
   
   # Routes: list of route IDs
   routes <- l$TransXChange$Routes %>% map(attributes) %>% map(unlist)  %>% lapply(as.data.frame.list)
-  list_timetables[['routes']] <- routes %>% rbindlist() %>% select(-starts_with('names'))
+  list_timetables[['routes']] <- routes %>% rbindlist(fill=T) %>% select(-starts_with('names'))
   
   
   
@@ -348,16 +411,43 @@ get_list_of_dfs_for_service <- function(x, xml_path) {
   
   
   
+  
   # making journey pattern table (separate to other elements of 'Service' as formatted differently - deeper table)
   standard_service[['Origin']] <- NULL
   standard_service[['Destination']] <- NULL
+  standard_service[['UseAllStopPoints']] <- NULL
   
-  standard_service <- rbindlist(standard_service)     # combine and loop to ensure dataframe format is correct
+  # make line
+  patterns_store <- list()
+  for (i in 1:length(standard_service)){
+    thing <- unlist(standard_service[[i]])
+    ix <- (thing %>% names()) == "JourneyPatternSectionRefs"
+    patterns <- data.frame(thing[!ix]) %>% t()
+    patterns$JourneyPatternSectionRefs <- thing[ix]
+    patterns <- data.frame(patterns)
+    
+    if (is.null(patterns$JourneyPatternSectionRefs)) {   # this is missing in some cases
+      patterns$JourneyPatternSectionRefs <- rep('placeholder', nrow(patterns)) 
+    }
+    
+    if (nrow(patterns) == 5){
+      names(patterns) <-c( "PrivateCode" ,  "DestinationDisplay",  "Direction"  , "RouteRef" ,"JourneyPatternSectionRefs") 
+    } else {
+      print(patterns)
+    }
+    
+    patterns_store[[i]] <- patterns
+  }
+  standard_service <- rbindlist(patterns_store, fill = T)
+  
+  
+  #standard_service <- rbindlist(standard_service, fill=T)     # combine and loop to ensure dataframe format is correct
   setDF(standard_service)   # ensure isnt a data.table
   for (i in 1:ncol(standard_service)){
-    standard_service[, i] <- unlist(standard_service[, i])
+    standard_service[, i] <- unlist(standard_service[, i])  # ensure all cols are just vectors: nothing more
   }
   list_timetables[['standard_service']] <- standard_service
+  
   
   
   
@@ -440,6 +530,82 @@ save(full_isle_of_wight, file = "full_isle_of_wight.RData")
 
 
 ###### End of processing
+
+
+
+
+
+
+# Wrapping above into single function -------------------------------------
+
+
+extract_all_xml_files <- function(xml_path, output_list_folder, dataset_id) {
+  #' Take all bus timetables in XML format from one folder. Return list of 8 tables
+  #' 
+  #' @param xml_path Folder pathway where XML files are
+  #' 
+  #' @param output_list_folder Pathway where output list will be put
+  #' 
+  #' @param dataset_id ID number of that dataset. Use to set output filename
+  #' 
+  
+  ## In the below 'full_isle_of_wight' is the list of data. It could be the data for
+  ## any dataset in practice
+  
+  #setwd('/Users/dftdatascience/Desktop/bods_timetables')
+  #xml_path <- "xml_timetables_data/bus_timetable_xml/"
+  
+  IoW_list <- list.files(xml_path, pattern = "xml")
+  
+  
+  
+  ### apply func to all services on Isle of Wight
+  all_services_list <- vector(mode='list', length=length(IoW_list))
+  
+  for (i in seq_along(1:length(all_services_list))){
+    x = IoW_list[i]
+    all_services_list[[i]] <- get_list_of_dfs_for_service(x, xml_path)
+    save(all_services_list, file = 'all_services_list.RData')
+    print(x)
+  }
+  
+  
+  print('append to get 8 large dfs covering all services')
+  full_isle_of_wight <- list()
+  table_names <- names(all_services_list[[1]])
+  
+  for (i in seq_along(1:length(table_names))){
+    table_name <- table_names[i]
+    full_isle_of_wight[[table_name]] <- bind_rows(lapply(all_services_list, '[[', i))
+    full_isle_of_wight[[table_name]] <- distinct(full_isle_of_wight[[table_name]])
+    setDF(full_isle_of_wight[[table_name]])  # ensure it isn't a data.table
+  }
+  save(full_isle_of_wight, file = 'all_services_list.RData')
+  
+  
+  
+  ## adding service name to links table
+  service_code_lookup <- full_isle_of_wight$service_details %>% 
+    select(ServiceCode, file_source) %>%
+    distinct()
+  
+  full_isle_of_wight$all_route_sections_df  <- full_isle_of_wight$all_route_sections_df %>% 
+    merge(service_code_lookup, by='file_source')
+  
+  # add an ID that's unique for that link and service. Useful when plotting the links
+  full_isle_of_wight$all_route_sections_df  <- full_isle_of_wight$all_route_sections_df %>%
+    mutate(unique_service_routelink_id = paste0(ServiceCode, '_', routelinks_repd))
+  
+  
+  
+  # saving results
+  output_path <- paste0(output_list_folder, '/dataset', dataset_id, '.RData')
+  save(full_isle_of_wight, file = output_path)
+  
+  
+}
+
+
 
 
 

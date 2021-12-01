@@ -1,4 +1,6 @@
 xml_timetables_data/*
+temp_timetables_download/*
+extracts_store/*
 *.rds
 *.parquet
 *.csv
